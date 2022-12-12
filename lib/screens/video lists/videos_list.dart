@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:animations/animations.dart';
-import 'package:collection/collection.dart';
 import 'package:crimson/models/video.dart';
 import 'package:crimson/providers/index_provider.dart';
 import 'package:crimson/screens/player/player.dart';

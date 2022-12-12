@@ -1,5 +1,5 @@
 name: crimson
-description: A new Flutter project.
+description: A simple video player combine with plenty of features.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
@@ -28,13 +28,11 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
-  hive: ^2.2.3
   fluentui_system_icons: ^1.1.184
   provider: ^6.0.4
   hidable: ^1.0.3
   animations: ^2.0.7
   video_player: ^2.4.7
-  #better_player:
   flutter_storage_path:
   intl: ^0.17.0
   filesize: ^2.0.1
@@ -82,7 +80,8 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-   - assets/image/logo.png
+    - assets/image/logo.png
+
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

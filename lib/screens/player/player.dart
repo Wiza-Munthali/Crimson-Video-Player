@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:crimson/models/video.dart';
 import 'package:crimson/providers/video_provider.dart';
 import 'package:crimson/reusables/popUpItem.dart';
@@ -36,7 +35,8 @@ class _PlayerState extends State<Player>
   late AnimationController _animationController;
   late Tween<Duration> _tween;
   late Animation<Duration> _animation;
-  late VideoPlayerController _videoPlayerController;
+  //late VideoPlayerController _videoPlayerController;
+  late VideoPlayerController _playerController;
   late TapDownDetails _details;
   final Files video;
   int counter = 0;
@@ -49,6 +49,8 @@ class _PlayerState extends State<Player>
   double? _brightness;
   bool _showVolume = false;
   bool _showBrightness = false;
+  late bool backgroundInitialized;
+  bool _backgroundPlayback = false;
 
   List<PopUpItem> playbackSpeedOptions = [
     new PopUpItem(false, 0.5, Icon(FluentIcons.multiplier_5x_48_regular)),
@@ -67,19 +69,20 @@ class _PlayerState extends State<Player>
     _pip = SimplePip();
     getCurrentVolume();
     File _file = new File(video.path.toString());
-    _videoPlayerController = VideoPlayerController.file(_file)
+
+    _playerController = VideoPlayerController.file(_file)
       ..addListener(() {
         setState(() {});
       })
       ..setLooping(true)
       ..initialize().then((value) {
-        _videoPlayerController.play();
+        _playerController.play();
       });
     Wakelock.enable();
     PerfectVolumeControl.hideUI = true;
     _animationController =
         AnimationController(duration: Duration(milliseconds: 3), vsync: this);
-    _tween = Tween(begin: position, end: _videoPlayerController.value.duration);
+    _tween = Tween(begin: position, end: _playerController.value.duration);
     _animation = _tween.animate(
         CurvedAnimation(parent: _animationController, curve: Curves.easeInOut));
     WidgetsBinding.instance.addObserver(this);
@@ -116,9 +119,9 @@ class _PlayerState extends State<Player>
                     width: _width,
                     child: Stack(
                       children: [
-                        videoContainer(context, _videoPlayerController),
-                        _overLayControls(_height, _width,
-                            _videoPlayerController, context, video)
+                        videoContainer(context, _playerController),
+                        _overLayControls(
+                            _height, _width, _playerController, context, video)
                       ],
                     ),
                   ),
@@ -128,9 +131,9 @@ class _PlayerState extends State<Player>
                     width: _width,
                     child: Stack(
                       children: [
-                        videoContainer(context, _videoPlayerController),
-                        _overLayControls(_height, _width,
-                            _videoPlayerController, context, video)
+                        videoContainer(context, _playerController),
+                        _overLayControls(
+                            _height, _width, _playerController, context, video)
                       ],
                     ),
                   ),
@@ -141,7 +144,8 @@ class _PlayerState extends State<Player>
 
   @override
   void dispose() {
-    _videoPlayerController.dispose();
+    // _videoPlayerController.dispose();
+    _playerController.dispose();
     _animationController.dispose();
     resetPlayerOrientation();
     Wakelock.disable();
@@ -152,8 +156,13 @@ class _PlayerState extends State<Player>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState lifecycleState) {
-    if (lifecycleState == AppLifecycleState.inactive) {
+    if (lifecycleState == AppLifecycleState.paused) {
       //_floating.enable(Rational.square());
+      if (_backgroundPlayback) {
+        setState(() {
+          _playerController.play();
+        });
+      }
     }
   }
 
@@ -168,6 +177,7 @@ class _PlayerState extends State<Player>
       child: AspectRatio(
         aspectRatio: controller.value.aspectRatio,
         child: Stack(children: [
+          // VideoPlayer(controller),
           VideoPlayer(controller),
           _overLayIndicators(controller),
         ]),
@@ -486,9 +496,9 @@ class _PlayerState extends State<Player>
                         icon: controller.value.isLooping
                             ? Icon(FluentIcons.arrow_repeat_1_24_filled)
                             : Icon(FluentIcons.arrow_repeat_all_24_filled)),
-                    IconButton(
-                        onPressed: null,
-                        icon: Icon(FluentIcons.closed_caption_48_filled)),
+                    // IconButton(
+                    //     onPressed: null,
+                    //     icon: Icon(FluentIcons.closed_caption_48_filled)),
                     IconButton(
                         onPressed: () => changeOrientation(context),
                         icon: currentOrientation == Orientation.portrait
@@ -507,7 +517,7 @@ class _PlayerState extends State<Player>
   Widget _moreControls(double width, VideoPlayerController controller,
       BuildContext context, Files video) {
     return GlassmorphicContainer(
-      height: 400.h,
+      height: 350.h,
       width: width,
       margin: const EdgeInsets.all(10),
       borderRadius: 10,
@@ -601,34 +611,34 @@ class _PlayerState extends State<Player>
                 ),
               ),
             ),
-            GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-                showModalBottomSheet(
-                    backgroundColor: Colors.transparent,
-                    context: context,
-                    builder: (context) =>
-                        captionsPopUp(width, controller, video));
-              },
-              child: Container(
-                margin: const EdgeInsets.only(top: 20, bottom: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Icon(
-                      FluentIcons.closed_caption_48_filled,
-                    ),
-                    SizedBox(
-                      width: 10.w,
-                    ),
-                    Text("Captions",
-                        style: TextStyle(
-                            fontSize: 24.sp, fontWeight: FontWeight.w600)),
-                  ],
-                ),
-              ),
-            ),
+            // GestureDetector(
+            //   onTap: () {
+            //     Navigator.pop(context);
+            //     showModalBottomSheet(
+            //         backgroundColor: Colors.transparent,
+            //         context: context,
+            //         builder: (context) =>
+            //             captionsPopUp(width, controller, video));
+            //   },
+            //   child: Container(
+            //     margin: const EdgeInsets.only(top: 20, bottom: 20),
+            //     child: Row(
+            //       mainAxisAlignment: MainAxisAlignment.start,
+            //       crossAxisAlignment: CrossAxisAlignment.center,
+            //       children: [
+            //         Icon(
+            //           FluentIcons.closed_caption_48_filled,
+            //         ),
+            //         SizedBox(
+            //           width: 10.w,
+            //         ),
+            //         Text("Captions",
+            //             style: TextStyle(
+            //                 fontSize: 24.sp, fontWeight: FontWeight.w600)),
+            //       ],
+            //     ),
+            //   ),
+            // ),
             Container(
               margin: const EdgeInsets.only(top: 20, bottom: 20),
               child: Row(
@@ -652,9 +662,13 @@ class _PlayerState extends State<Player>
                   ),
                   Switch(
                       activeColor: Theme.of(context).colorScheme.inversePrimary,
-                      value: context.watch<VideoProvider>().backgroundPlayback,
-                      onChanged: (value) {
-                        context.read<VideoProvider>().setBackgroundPlayback();
+                      value: _backgroundPlayback,
+                      onChanged: (bool newValue) {
+                        print(newValue);
+                        setState(() {
+                          _backgroundPlayback = newValue;
+                        });
+                        Navigator.pop(context);
                       })
                 ],
               ),
@@ -983,7 +997,8 @@ class _PlayerState extends State<Player>
   }
 
   _doubleTap(VideoPlayerController controller) async {
-    if (controller.value.isInitialized) {
+    bool? isInitialized = controller.value.isInitialized;
+    if (isInitialized) {
       final _width = MediaQuery.of(context).size.width;
       final _x = _details.globalPosition.dx;
       final _middleWidth = _width / 2;
@@ -1043,35 +1058,38 @@ class _PlayerState extends State<Player>
 
   _dragToSeek(DragUpdateDetails details, VideoPlayerController controller,
       BuildContext context) async {
-    setState(() {
-      _showProgress = true;
-    });
+    if (controller.value.isInitialized) {
+      setState(() {
+        _showProgress = true;
+      });
 
-    Offset x = details.delta;
-    Duration? currentPosition = await controller.position;
+      Offset x = details.delta;
+      Duration? currentPosition = await controller.position;
 
-    if (x.dx > 0) {
-      counter++;
-    } else if (x.dx < 0) {
-      counter--;
+      if (x.dx > 0) {
+        counter++;
+      } else if (x.dx < 0) {
+        counter--;
+      }
+
+      position = currentPosition! + Duration(milliseconds: counter * 1000);
+      if (position!.isNegative) {
+        position = Duration(milliseconds: 0);
+      } else if (position! >= controller.value.duration) {
+        position = controller.value.duration;
+      }
+
+      final _value = controller.value.duration.inMilliseconds;
+      String _x = (((100 * position!.inMilliseconds) / _value) / 100)
+          .toStringAsFixed(1);
+
+      value = double.parse(_x);
     }
-
-    position = currentPosition! + Duration(milliseconds: counter * 1000);
-    if (position!.isNegative) {
-      position = Duration(milliseconds: 0);
-    } else if (position! >= controller.value.duration) {
-      position = controller.value.duration;
-    }
-
-    final _value = controller.value.duration.inMilliseconds;
-    String _x =
-        (((100 * position!.inMilliseconds) / _value) / 100).toStringAsFixed(1);
-
-    value = double.parse(_x);
   }
 
   _updatePosition(VideoPlayerController controller) async {
-    if (controller.value.isInitialized) {
+    bool isInitialized = controller.value.isInitialized;
+    if (isInitialized) {
       try {
         controller.seekTo(position!);
 
