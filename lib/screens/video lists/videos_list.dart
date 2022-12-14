@@ -490,6 +490,7 @@ class _VideoListState extends State<VideoList> {
             child: LayoutBuilder(
                 builder: (BuildContext ctx, BoxConstraints constraints) {
               return GridView.builder(
+                shrinkWrap: true,
                 primary: false,
                 controller: context.watch<IndexProvider>().scrollController,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(

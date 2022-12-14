@@ -62,14 +62,15 @@ class _PlayerState extends State<Player>
   ];
 
   _PlayerState(this.video);
+  late File _file;
 
   @override
   void initState() {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     _pip = SimplePip();
     getCurrentVolume();
-    File _file = new File(video.path.toString());
-
+    _file = new File(video.path.toString());
+    print("FILE: $_file");
     _playerController = VideoPlayerController.file(_file)
       ..addListener(() {
         setState(() {});

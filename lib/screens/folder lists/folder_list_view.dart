@@ -420,6 +420,7 @@ class _FolderListViewState extends State<FolderListView> {
             child: LayoutBuilder(
                 builder: (BuildContext ctx, BoxConstraints constraints) {
               return GridView.builder(
+                shrinkWrap: true,
                 primary: false,
                 controller: _controller,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
