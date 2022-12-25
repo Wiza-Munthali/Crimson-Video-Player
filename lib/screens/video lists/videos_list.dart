@@ -604,9 +604,6 @@ class _VideoListState extends State<VideoList> {
       List<Files> f = [];
       _allFiles.forEach((i) => f.addAll(i));
       _files.addAll(f);
-      _files.forEach((element) {
-        print("Element duration: ${element.duration}");
-      });
       _files.removeWhere(((element) => element.duration == ""));
       sortFunction(sortStyleSelected, sortFormatSelected);
       //print(_allFiles);
@@ -634,7 +631,7 @@ class _VideoListState extends State<VideoList> {
 
   Future<Uint8List?> getThumbNail(String path) async {
     final thumbnail = await VideoThumbnail.thumbnailData(
-        video: path, imageFormat: ImageFormat.PNG, maxHeight: 100, quality: 25);
+        video: path, imageFormat: ImageFormat.PNG, maxHeight: 100, quality: 10);
     return thumbnail;
   }
 }

@@ -71,14 +71,18 @@ class _PlayerState extends State<Player>
     getCurrentVolume();
     _file = new File(video.path.toString());
     print("FILE: $_file");
+
     _playerController = VideoPlayerController.file(_file)
       ..addListener(() {
         setState(() {});
       })
-      ..setLooping(true)
-      ..initialize().then((value) {
-        _playerController.play();
-      });
+      ..setLooping(true);
+    Future.delayed(Duration(milliseconds: 1000));
+
+    _playerController.initialize().then((value) {
+      _playerController.play();
+    });
+
     Wakelock.enable();
     PerfectVolumeControl.hideUI = true;
     _animationController =
@@ -149,6 +153,8 @@ class _PlayerState extends State<Player>
   @override
   void dispose() {
     // _videoPlayerController.dispose();
+    _playerController.pause();
+    _playerController..removeListener(() {});
     _playerController.dispose();
     _animationController.dispose();
     resetPlayerOrientation();
