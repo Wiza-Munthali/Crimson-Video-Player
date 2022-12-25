@@ -111,31 +111,34 @@ class _PlayerState extends State<Player>
     return ScreenUtilInit(
         designSize: Size(_width, _height),
         minTextAdapt: true,
-        builder: ((context, child) => Scaffold(
-              body: SafeArea(
-                child: PipWidget(
-                  pipChild: Container(
-                    decoration: BoxDecoration(color: Colors.black),
-                    height: _height,
-                    width: _width,
-                    child: Stack(
-                      children: [
-                        videoContainer(context, _playerController),
-                        _overLayControls(
-                            _height, _width, _playerController, context, video)
-                      ],
+        builder: ((context, child) => MediaQuery(
+              data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+              child: Scaffold(
+                body: SafeArea(
+                  child: PipWidget(
+                    pipChild: Container(
+                      decoration: BoxDecoration(color: Colors.black),
+                      height: _height,
+                      width: _width,
+                      child: Stack(
+                        children: [
+                          videoContainer(context, _playerController),
+                          _overLayControls(_height, _width, _playerController,
+                              context, video)
+                        ],
+                      ),
                     ),
-                  ),
-                  child: Container(
-                    decoration: BoxDecoration(color: Colors.black),
-                    height: _height,
-                    width: _width,
-                    child: Stack(
-                      children: [
-                        videoContainer(context, _playerController),
-                        _overLayControls(
-                            _height, _width, _playerController, context, video)
-                      ],
+                    child: Container(
+                      decoration: BoxDecoration(color: Colors.black),
+                      height: _height,
+                      width: _width,
+                      child: Stack(
+                        children: [
+                          videoContainer(context, _playerController),
+                          _overLayControls(_height, _width, _playerController,
+                              context, video)
+                        ],
+                      ),
                     ),
                   ),
                 ),

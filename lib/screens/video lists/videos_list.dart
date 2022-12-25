@@ -43,34 +43,39 @@ class _VideoListState extends State<VideoList> {
     return ScreenUtilInit(
         designSize: Size(_deviceWidth, _deviceHeight),
         minTextAdapt: true,
-        builder: ((context, child) => FutureBuilder(
-            future: future,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-              return Container(
-                child: Stack(
-                  children: [
-                    Column(
-                      children: [
-                        viewToggle(_deviceWidth, context),
-                        Expanded(
-                          child: changeListView(
-                              context.watch<VideoProvider>().videoViewList,
-                              _deviceWidth,
-                              _videos),
-                        ),
-                      ],
-                    ),
-                    // ignore: dead_code
-                    // Positioned(bottom: 0, child: MiniPlayer()),
-                  ],
-                ),
-              );
-            })));
+        builder: ((context, child) => MediaQuery(
+              data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+              child: FutureBuilder(
+                  future: future,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                    return Container(
+                      child: Stack(
+                        children: [
+                          Column(
+                            children: [
+                              viewToggle(_deviceWidth, context),
+                              Expanded(
+                                child: changeListView(
+                                    context
+                                        .watch<VideoProvider>()
+                                        .videoViewList,
+                                    _deviceWidth,
+                                    _videos),
+                              ),
+                            ],
+                          ),
+                          // ignore: dead_code
+                          // Positioned(bottom: 0, child: MiniPlayer()),
+                        ],
+                      ),
+                    );
+                  }),
+            )));
   }
 
   sortFunction(String type, String format) {

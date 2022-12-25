@@ -85,9 +85,11 @@ class _FolderListState extends State<FolderList> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(name,
+                    textScaleFactor: 1.0,
                     style: TextStyle(
                         fontSize: 24.sp, fontWeight: FontWeight.w600)),
                 Text("${_files.length} videos",
+                    textScaleFactor: 1.0,
                     style: TextStyle(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w600,

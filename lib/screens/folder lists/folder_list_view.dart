@@ -44,25 +44,28 @@ class _FolderListViewState extends State<FolderListView> {
     final _height = MediaQuery.of(context).size.height;
     return ScreenUtilInit(
         designSize: Size(_width, _height),
-        builder: (context, child) => Scaffold(
-              appBar: AppBar(
-                leading: IconButton(
-                    onPressed: () => Navigator.pop(context),
-                    icon: Icon(FluentIcons.arrow_left_48_filled)),
-                title: Text(
-                  name,
-                  style:
-                      TextStyle(fontSize: 24.sp, fontWeight: FontWeight.bold),
+        builder: (context, child) => MediaQuery(
+              data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+              child: Scaffold(
+                appBar: AppBar(
+                  leading: IconButton(
+                      onPressed: () => Navigator.pop(context),
+                      icon: Icon(FluentIcons.arrow_left_48_filled)),
+                  title: Text(
+                    name,
+                    style:
+                        TextStyle(fontSize: 24.sp, fontWeight: FontWeight.bold),
+                  ),
                 ),
-              ),
-              body: Container(
-                child: Column(
-                  children: [
-                    viewToggle(_width, context),
-                    Expanded(
-                      child: changeListView(gridView, _width, files),
-                    ),
-                  ],
+                body: Container(
+                  child: Column(
+                    children: [
+                      viewToggle(_width, context),
+                      Expanded(
+                        child: changeListView(gridView, _width, files),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ));
